@@ -11,13 +11,11 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorScheme = darkColorScheme(
     primary = WhiteSolidPrimary,
     error = RedSolidPrimary,
-    secondary = BlackTransparent20
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = BlackSolidPrimary,
     error = RedSolidPrimary,
-    secondary = WhiteTransparent20
 )
 
 @Composable
@@ -28,12 +26,12 @@ fun extendColor(light: Color, dark: Color, isSystemDarkTheme: Boolean = isSystem
 val ColorScheme.MessageFemale @Composable get() = extendColor(
     PinkQuaternaryTransparent50, 
     PinkQuaternaryTransparent50
-);
+)
 
 val ColorScheme.MessageMale @Composable get() = extendColor(
     BlueSecondaryTransparent50,
     BlueSecondaryTransparent50
-);
+)
 
 @Composable
 fun ChatAppTheme(
