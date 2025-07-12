@@ -2,30 +2,14 @@ package com.eclipsel.chatapp.view_models.gender_pick_screen
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
 import com.eclipsel.chatapp.models.Gender
 import com.eclipsel.chatapp.navigation.BirthDatePickScreenRoute
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-data class GenderPickScreenData(
-    val gender: Gender? = null,
-    val isFemalePicked: Boolean = false,
-    val isMalePicked: Boolean = false
-)
-
-interface IGenderPickScreenViewModel {
-    val screenState: StateFlow<GenderPickScreenData>
-    fun onGenderChange(gender: Gender)
-    fun onGenderSubmit()
-}
 
 class GenderPickScreenViewModel(
     val navigate: (NavKey) -> Unit,

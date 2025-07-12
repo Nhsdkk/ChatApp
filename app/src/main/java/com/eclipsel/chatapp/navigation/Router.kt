@@ -16,12 +16,16 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.eclipsel.chatapp.models.Gender
 import com.eclipsel.chatapp.ui.screens.BirthDatePickScreen
 import com.eclipsel.chatapp.ui.screens.GenderPickScreen
+import com.eclipsel.chatapp.ui.screens.InterestsPickScreen
 import com.eclipsel.chatapp.ui.screens.StartScreen
+import com.eclipsel.chatapp.utils.LocalDateSerializer
 import com.eclipsel.chatapp.view_models.birth_date_pick_screen.BirthDatePickScreenViewModel
 import com.eclipsel.chatapp.view_models.gender_pick_screen.GenderPickScreenViewModel
+import com.eclipsel.chatapp.view_models.interests_pick_screen.InterestsPickScreenViewModel
 import com.eclipsel.chatapp.view_models.start_screen.StartScreenViewModel
 import kotlinx.serialization.Serializable
 import java.security.InvalidKeyException
+import java.time.LocalDate
 
 @Serializable
 data object StartScreenRoute : NavKey
@@ -34,12 +38,20 @@ data class BirthDatePickScreenRoute(
     val gender: Gender
 ) : NavKey
 
+@Serializable
+data class InterestsPickScreenRoute(
+    val gender: Gender,
+    @Serializable(with = LocalDateSerializer::class)
+    val birthDate: LocalDate
+) : NavKey
+
 @Composable
 fun Router(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
     val backStack = rememberNavBackStack(StartScreenRoute)
+    val navigate: (NavKey) -> Unit = { backStack.add(it) }
 
     NavDisplay(
         backStack = backStack,
@@ -56,7 +68,9 @@ fun Router(
                             factory = object : ViewModelProvider.Factory {
                                 @Suppress("UNCHECKED_CAST")
                                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                                    return StartScreenViewModel { backStack.add(it) } as T
+                                    return StartScreenViewModel (
+                                        navigate = navigate
+                                    ) as T
                                 }
                             }
                         ),
@@ -71,7 +85,7 @@ fun Router(
                                 @Suppress("UNCHECKED_CAST")
                                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                                     return GenderPickScreenViewModel(
-                                        navigate = { backStack.add(it) }, 
+                                        navigate = navigate,
                                         snackbarHostState = snackbarHostState
                                     ) as T
                                 }
@@ -89,7 +103,25 @@ fun Router(
                                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                                     return BirthDatePickScreenViewModel(
                                         gender = key.gender,
-                                        snackbarHostState = snackbarHostState
+                                        snackbarHostState = snackbarHostState,
+                                        navigate = navigate
+                                    ) as T
+                                }
+                            }
+                        ),
+                        modifier = modifier
+                    )
+                }
+
+                is InterestsPickScreenRoute -> NavEntry(key) {
+                    InterestsPickScreen(
+                        viewModel = viewModel<InterestsPickScreenViewModel>(
+                            factory = object: ViewModelProvider.Factory {
+                                @Suppress("UNCHECKED_CAST")
+                                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                    return InterestsPickScreenViewModel(
+                                        gender = key.gender,
+                                        birthDate = key.birthDate
                                     ) as T
                                 }
                             }

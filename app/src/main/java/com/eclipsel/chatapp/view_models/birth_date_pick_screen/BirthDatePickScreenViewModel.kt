@@ -4,7 +4,9 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation3.runtime.NavKey
 import com.eclipsel.chatapp.models.Gender
+import com.eclipsel.chatapp.navigation.InterestsPickScreenRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +26,8 @@ interface IBirthDateScreenViewModel {
 
 class BirthDatePickScreenViewModel(
     gender: Gender,
-    val snackbarHostState: SnackbarHostState
+    val snackbarHostState: SnackbarHostState,
+    val navigate: (NavKey) -> Unit
 ) : IBirthDateScreenViewModel, ViewModel() {
     private val _state = MutableStateFlow(
         BirthDatePickScreenState(
@@ -64,5 +67,12 @@ class BirthDatePickScreenViewModel(
             }
             return
         }
+
+        navigate(
+            InterestsPickScreenRoute(
+                gender = _state.value.gender,
+                birthDate = _state.value.birthDate
+            )
+        )
     }
 }
