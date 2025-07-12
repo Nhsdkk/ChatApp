@@ -20,12 +20,11 @@ import com.eclipsel.chatapp.ui.screens.common.IconTextButton
 import com.eclipsel.chatapp.ui.theme.Background
 import com.eclipsel.chatapp.ui.theme.ChatAppTheme
 import com.eclipsel.chatapp.view_models.start_screen.IStartScreenViewModel
-import com.eclipsel.chatapp.view_models.start_screen.StartScreenViewModel
 
 @Composable
 fun StartScreen(
-    modifier: Modifier = Modifier,
-    startScreenVM: IStartScreenViewModel = StartScreenViewModel()
+    startScreenVM: IStartScreenViewModel,
+    modifier: Modifier = Modifier
 ) {
     StartScreenUi(
         modifier = modifier,
@@ -42,7 +41,7 @@ fun StartScreenUi(
 ) {
     Background(
         gradient = MaterialTheme.colorScheme.Background,
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

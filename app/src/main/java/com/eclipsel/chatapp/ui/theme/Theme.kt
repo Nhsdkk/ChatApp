@@ -40,14 +40,34 @@ fun extendBrush(light: Brush, dark: Brush, isDarkTheme: Boolean = isSystemInDark
     return if (isDarkTheme) dark else light
 }
 
+val ColorScheme.Outline @Composable get() = extendColor(
+    BlackTransparent40,
+    WhiteTransparent40
+)
+
+val ColorScheme.Online @Composable get() = extendColor(
+    GreenSolidPrimary,
+    GreenSolidPrimary
+)
+
 val ColorScheme.MessageFemale @Composable get() = extendColor(
-    PinkQuaternaryTransparent50, 
-    PinkQuaternaryTransparent50
+    PinkSolidSecondary,
+    PinkSolidTertiery
 )
 
 val ColorScheme.MessageMale @Composable get() = extendColor(
-    BlueSecondaryTransparent50,
-    BlueSecondaryTransparent50
+    BlueSolidSecondary,
+    BlueSolidTertiery
+)
+
+val ColorScheme.ButtonFemale @Composable get() = extendColor(
+    PinkSolidTertiery,
+    PinkSolidSecondary
+)
+
+val ColorScheme.ButtonMale @Composable get() = extendColor(
+    BlueSolidTertiery,
+    BlueSolidSecondary
 )
 
 val ColorScheme.Background @Composable get() = extendBrush(

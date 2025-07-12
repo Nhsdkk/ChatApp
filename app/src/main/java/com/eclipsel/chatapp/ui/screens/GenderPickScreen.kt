@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.eclipsel.chatapp.R
@@ -31,18 +32,20 @@ import com.eclipsel.chatapp.ui.screens.common.Background
 import com.eclipsel.chatapp.ui.screens.common.IconList
 import com.eclipsel.chatapp.ui.screens.common.IconTextButton
 import com.eclipsel.chatapp.ui.theme.Background
+import com.eclipsel.chatapp.ui.theme.ButtonFemale
+import com.eclipsel.chatapp.ui.theme.ButtonMale
 import com.eclipsel.chatapp.ui.theme.ChatAppTheme
 import com.eclipsel.chatapp.view_models.gender_pick_screen.GenderPickScreenViewModel
 import com.eclipsel.chatapp.view_models.gender_pick_screen.IGenderPickScreenViewModel
 
 @Composable
 fun GenderPickScreen(
-    modifier: Modifier = Modifier,
-    genderPickScreenViewModel: IGenderPickScreenViewModel = GenderPickScreenViewModel()
+    genderPickScreenViewModel: IGenderPickScreenViewModel,
+    modifier: Modifier = Modifier
 ) {
-    val gender = genderPickScreenViewModel.genderState.collectAsState()
+    val screenState = genderPickScreenViewModel.screenState.collectAsState()
     GenderPickScreenUi(
-        currentGender = gender.value,
+        currentGender = screenState.value.gender,
         onGenderChange = { genderPickScreenViewModel.onGenderChange(it) },
         onSubmit = { genderPickScreenViewModel.onGenderSubmit() },
         modifier = modifier.fillMaxSize()
@@ -58,7 +61,7 @@ fun GenderPickScreenUi(
 ) {
     Background(
         gradient = MaterialTheme.colorScheme.Background,
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     )
     Column(
         modifier = modifier
@@ -73,7 +76,7 @@ fun GenderPickScreenUi(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             IconList()
-            Spacer(modifier = modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(25.dp))
             Image(
                 painter = painterResource(R.drawable.app_icon),
                 modifier = Modifier
@@ -98,15 +101,17 @@ fun GenderPickScreenUi(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                genderButton(
+                GenderButton(
                     gender = Gender.Female,
+                    isPicked = currentGender != null && currentGender == Gender.Female,
                     onClick = onGenderChange,
                     modifier = Modifier
                         .weight(0.4f)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                genderButton(
+                GenderButton(
                     gender = Gender.Male,
+                    isPicked = currentGender != null && currentGender == Gender.Male,
                     onClick = onGenderChange,
                     modifier = Modifier
                         .weight(0.4f)
@@ -127,7 +132,7 @@ fun GenderPickScreenUi(
 fun GenderPickScreenPreview() {
     ChatAppTheme {
         GenderPickScreenUi(
-            currentGender = Gender.Female,
+            currentGender = null,
             onGenderChange = {},
             onSubmit = {}
         )
@@ -135,8 +140,9 @@ fun GenderPickScreenPreview() {
 }
 
 @Composable
-fun genderButton(
+fun GenderButton(
     gender: Gender,
+    isPicked: Boolean,
     modifier: Modifier = Modifier,
     onClick: (Gender) -> Unit,
     enabled: Boolean = true
@@ -145,7 +151,12 @@ fun genderButton(
         enabled = enabled,
         onClick = { onClick(gender) },
         colors = ButtonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = when {
+                isPicked && gender == Gender.Male -> MaterialTheme.colorScheme.ButtonMale
+                isPicked && gender == Gender.Female -> MaterialTheme.colorScheme.ButtonFemale
+                !isPicked -> MaterialTheme.colorScheme.surface
+                else -> throw IllegalArgumentException("Can't calculate color of GenderButton")
+            },
             contentColor = MaterialTheme.colorScheme.onSurface,
             disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
